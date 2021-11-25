@@ -21,17 +21,24 @@ namespace Infrastructure.Data
                 .HasKey(pu => new { pu.ProjectId, pu.UserId });
             modelBuilder.Entity<ProjectUser>()
                 .HasOne<Project>(pu => pu.Project)
-                .WithMany(p => p.Users);
+                .WithMany(p => p.Users)
+                .HasForeignKey(pu => pu.ProjectId);
             modelBuilder.Entity<ProjectUser>()
                 .HasOne<User>(pu => pu.User)
-                .WithMany(u => u.Projects);
+                .WithMany(u => u.Projects)
+                .HasForeignKey(pu => pu.UserId);
 
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+
+            modelBuilder.Entity<Role>()
+                .HasData(new Role() { Id = 1, Name = "user" });
                 
         }
 
         public DbSet<Project> Projects { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<ProjectUser> ProjectUsers { get; set; }
        
     }
 }

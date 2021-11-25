@@ -1,12 +1,19 @@
-﻿using Application.Dto.UsersDto;
+﻿using Application.Dto.RolesDto;
+using Application.Dto.UsersDto;
+using Application.Helpers;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,10 +24,13 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        private IConfiguration _config;
+
+        public UserService(IUserRepository userRepository, IMapper mapper,IConfiguration config)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _config = config;
         }
 
         public IEnumerable<UserDto> GetAllUser()
@@ -50,68 +60,68 @@ namespace Application.Services
             if (!string.Equals(newUser.Passwrod, newUser.ConfirmPasswrod))
                 throw new Exception("Passwords are not the same");
 
-           
-
             var user = _mapper.Map<User>(newUser);
 
-            user.Password = Hash(newUser.Passwrod, 1000);
-            
+            user.Password = PasswordHasher.Hash(newUser.Passwrod, 1000);
+            user.RoleId = 1;
             _userRepository.Add(user);
             return _mapper.Map<UserDto>(user);
         }
 
-        private string Hash(string password, int iterations)
+        public string Login(LoginUserDto loginUser)
         {
-            // Create salt
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
+            var user = _userRepository.GetAll().FirstOrDefault(x => x.Email == loginUser.Email);
 
-            // Create hash
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            var hash = pbkdf2.GetBytes(20);
+            if (user == null)
+                throw new Exception("Incorrect Email or password");
 
-            // Combine salt and hash
-            var hashBytes = new byte[16 + 20];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
+            if (PasswordHasher.Verify(loginUser.Password, user.Password) == false)
+                throw new Exception("Incorrect Email or Password");
 
-            // Convert to base64
-            var base64Hash = Convert.ToBase64String(hashBytes);
 
-            // Format hash with extra information
-            return string.Format("$MYHASH$V1${0}${1}", iterations, base64Hash);
-        }
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-        private static bool Verify(string password, string hashedPassword)
-        {
-
-            // Extract iteration and Base64 string
-            var splittedHashString = hashedPassword.Replace("$MYHASH$V1$", "").Split('$');
-            var iterations = int.Parse(splittedHashString[0]);
-            var base64Hash = splittedHashString[1];
-
-            // Get hash bytes
-            var hashBytes = Convert.FromBase64String(base64Hash);
-
-            // Get salt
-            var salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            // Create hash with given salt
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            // Get result
-            for (var i = 0; i < 20; i++)
+            var claims = new[]
             {
-                if (hashBytes[i + 16] != hash[i])
-                {
-                    return false;
-                }
-            }
-            return true;
+                new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.GivenName, user.FirstName),
+                new Claim(ClaimTypes.Surname, user.LastName),
+                new Claim(ClaimTypes.Role, user.Role.Name)
+            };
+
+            var token = new JwtSecurityToken(_config["Jwt:Issuer"],
+              _config["Jwt:Audience"],
+              claims,
+              expires: DateTime.Now.AddMinutes(15),
+              signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+
         }
 
+        public UserDto GetCurrentUser(HttpContext httpContext)
+        {
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+
+            if(identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return new UserDto
+                {
+                    FirstName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
+                    LastName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
+                    Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
+                    Role = _mapper.Map<RoleDto>(new Role { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value } )
+                };
+            }
+
+            return null;
+        }
+
+       
 
     }
 }

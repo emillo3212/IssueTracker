@@ -21,12 +21,12 @@ namespace Infrastructure.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(p=>p.Projects);
+            return _context.Users.Include(p=>p.Projects).ThenInclude(pp=>pp.Project).Include(r=> r.Role);
         }
 
         public User GetById(int id)
         {
-            return _context.Users.FirstOrDefault(x => x.Id == id);
+            return _context.Users.Include(r=>r.Role).Include(p=> p.Projects).ThenInclude(pr=>pr.Project).FirstOrDefault(x => x.Id == id);
         }
 
         public User Add(User user)

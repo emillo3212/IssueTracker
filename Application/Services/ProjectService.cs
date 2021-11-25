@@ -1,5 +1,6 @@
 ﻿using Application.Dto;
 using Application.Dto.ProjectsDto;
+using Application.Dto.UsersDto;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -28,7 +29,6 @@ namespace Application.Services
         public IEnumerable<ProjectDto> GetAllProjects()
         {
             var projects = _projectRepository.GetAll();
-            
 
             return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }

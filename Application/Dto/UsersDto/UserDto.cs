@@ -1,4 +1,7 @@
-﻿using Application.Dto.ProjectUserDtos;
+﻿using Application.Dto.ProjectsDto;
+using Application.Dto.ProjectsUserDtos;
+using Application.Dto.ProjectUserDtos;
+using Application.Dto.RolesDto;
 using Application.Mappings;
 using AutoMapper;
 using Domain.Entities;
@@ -15,6 +18,9 @@ namespace Application.Dto.UsersDto
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Email { get; set; }
+
+        public RoleDto Role { get; set; }
 
         public ICollection<ProjectUserProjectDto> Projects { get; set; }
 

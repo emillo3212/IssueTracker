@@ -1,6 +1,4 @@
-﻿using Application.Dto.ProjectUserDtos;
-using Application.Dto.UsersDto;
-using Application.Mappings;
+﻿using Application.Mappings;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -11,16 +9,14 @@ using System.Threading.Tasks;
 
 namespace Application.Dto.ProjectsDto
 {
-    public class CreateProjectDto : IMap
+    public class ProjectInUserDto : IMap
     {
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public ICollection<ProjectUserUserDto> Users { get; set; }
-
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<CreateProjectDto, Project>();
+            profile.CreateMap<Project, ProjectInUserDto>();
         }
     }
 }

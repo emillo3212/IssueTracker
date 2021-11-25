@@ -1,4 +1,6 @@
-﻿using Application.Mappings;
+﻿using Application.Dto.ProjectsUserDtos;
+using Application.Dto.UsersDto;
+using Application.Mappings;
 using AutoMapper;
 using Domain.Entities;
 using System;

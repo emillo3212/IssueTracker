@@ -7,15 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Dto.ProjectUserDtos
+namespace Application.Dto.UsersDto
 {
-    public class ProjectUserProjectDto : IMap
+    public class UserInCreatinProjectDto : IMap
     {
-        public int ProjectId { get; set; }
-
+        public int Id { get; set; }
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ProjectUser, ProjectUserProjectDto>();
+            profile.CreateMap<UserInCreatinProjectDto, User>();
         }
     }
 }

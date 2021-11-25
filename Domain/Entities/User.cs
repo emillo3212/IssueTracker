@@ -14,6 +14,9 @@ namespace Domain.Entities
         public string Password { get; set; }
         public string Email { get; set; }
 
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
+
         public ICollection<ProjectUser> Projects { get; set; }
     }
 }
