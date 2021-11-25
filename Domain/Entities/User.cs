@@ -18,5 +18,6 @@ namespace Domain.Entities
         public Role Role { get; set; }
 
         public ICollection<ProjectUser> Projects { get; set; }
+        public ICollection<Ticket> Tickets { get; set; }
     }
 }

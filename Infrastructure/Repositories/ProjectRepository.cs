@@ -19,12 +19,12 @@ namespace Infrastructure.Repositories
         }
         public IEnumerable<Project> GetAll()
         {
-            return _context.Projects.Include(u=> u.Users).ThenInclude(us => us.User);
+            return _context.Projects.Include(u=> u.Users).ThenInclude(us => us.User).Include(t=>t.Tickets);
         }
 
         public Project GetById(int id)
         {
-            return _context.Projects.Include(p=>p.Users).ThenInclude(pu=> pu.User).FirstOrDefault(x => x.Id == id);
+            return _context.Projects.Include(p=>p.Users).ThenInclude(pu=> pu.User).Include(t=>t.Tickets).FirstOrDefault(x => x.Id == id);
         }
 
         public Project Add(Project project)

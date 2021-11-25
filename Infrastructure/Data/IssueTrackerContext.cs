@@ -32,6 +32,16 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Role>()
                 .HasData(new Role() { Id = 1, Name = "user" });
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Project)
+                .WithMany(p => p.Tickets);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(u => u.AssignTo)
+                .WithMany(t => t.Tickets);
+
+            
                 
         }
 
@@ -39,6 +49,7 @@ namespace Infrastructure.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Role { get; set; }
         public DbSet<ProjectUser> ProjectUsers { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
        
     }
 }

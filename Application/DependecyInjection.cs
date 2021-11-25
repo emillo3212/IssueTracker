@@ -19,6 +19,7 @@ namespace Application
 
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITicketService, TicketService>();
 
             return services;
         }

@@ -1,4 +1,5 @@
 ﻿using Application.Dto.ProjectsUserDtos;
+using Application.Dto.TicketsDto;
 using Application.Dto.UsersDto;
 using Application.Mappings;
 using AutoMapper;
@@ -19,9 +20,12 @@ namespace Application.Dto.ProjectsDto
 
         public ICollection<ProjectUserDto> Users { get; set; } 
 
+        public ICollection<TicketDto> Tickets { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Project, ProjectDto>();
+            profile.CreateMap<ProjectDto, Project>();
         }
     }
 }

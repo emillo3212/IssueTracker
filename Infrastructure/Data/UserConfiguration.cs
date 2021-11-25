@@ -17,6 +17,8 @@ namespace Infrastructure.Data
             builder.Property(u => u.LastName).IsRequired();
             builder.Property(u => u.Email).IsRequired();
             builder.Property(u => u.Password).IsRequired();
+
+           
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Application.Services
 
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.FirstName),
                 new Claim(ClaimTypes.Surname, user.LastName),
@@ -111,6 +111,7 @@ namespace Application.Services
 
                 return new UserDto
                 {
+                    Id = int.Parse(userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value),
                     FirstName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
                     LastName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
                     Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,

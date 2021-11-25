@@ -21,7 +21,7 @@ namespace Infrastructure.Repositories
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.Include(p=>p.Projects).ThenInclude(pp=>pp.Project).Include(r=> r.Role);
+            return _context.Users.Include(p=>p.Projects).ThenInclude(pp=>pp.Project).Include(r=> r.Role).Include(u=>u.Tickets);
         }
 
         public User GetById(int id)
