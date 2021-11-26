@@ -13,6 +13,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -40,21 +41,6 @@ namespace WebApi.Controllers
 
             return Ok(user);
         }
-
-        [HttpPost]
-        public IActionResult Create(CreateUserDto newUser)
-        {
-            
-            var user = _userService.CreateUser(newUser);
-            return Created($"api/users/{user.Id}", user);
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login(LoginUserDto loginUser)
-        {
-            return Ok(_userService.Login(loginUser));
-        }
-
        
 
     }

@@ -20,6 +20,7 @@ namespace Application
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<IAccountService, AccountService>();
 
             return services;
         }

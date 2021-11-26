@@ -12,8 +12,7 @@ namespace Application.Interfaces
     {
         IEnumerable<UserDto> GetAllUser();
         UserDto GetUserById(int id);
-        UserDto CreateUser(CreateUserDto newUser);
-        string Login(LoginUserDto loginUser);
+       
         UserDto GetCurrentUser(HttpContext httpContext);
     }
 }
