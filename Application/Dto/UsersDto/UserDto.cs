@@ -22,7 +22,7 @@ namespace Application.Dto.UsersDto
 
         public RoleDto Role { get; set; }
 
-        //public ICollection<ProjectUserProjectDto> Projects { get; set; }
+        public ICollection<ProjectUserProjectDto> Projects { get; set; }
 
         public void Mapping(Profile profile)
         {

@@ -1,4 +1,5 @@
 ﻿using Application.Dto.ProjectsDto;
+using Application.Dto.ProjectUserDtos;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,16 +17,19 @@ namespace WebApi.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly IUserService _userService;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService,IUserService userService)
         {
             _projectService = projectService;
+            _userService = userService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            var projects = _projectService.GetAllProjects();
+            var user = _userService.GetCurrentUser(HttpContext);
+            var projects = _projectService.GetAllProjects(user.Id);
 
             return Ok(projects);
         }
@@ -43,6 +47,9 @@ namespace WebApi.Controllers
         [HttpPost]
         public IActionResult Create(CreateProjectDto newProject)
         {
+            var user = _userService.GetCurrentUser(HttpContext);
+            newProject.Users.Add(new ProjectUserUserDto { UserId = user.Id });
+
             var project = _projectService.CreateProject(newProject);
             return Created($"api/projects/{project.Id}", project);
         }
