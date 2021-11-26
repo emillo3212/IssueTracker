@@ -33,7 +33,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public IActionResult Create(CreateTicketDto newTicketDto)
         {
-            //newTicketDto.CreatedBy = _userService.GetCurrentUser(HttpContext).Id;
+           
             var ticket = _ticketService.CreateTicket(newTicketDto);
 
             return Created($"api/tickets/{ticket.Id}", ticket);

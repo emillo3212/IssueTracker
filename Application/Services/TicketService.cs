@@ -25,16 +25,17 @@ namespace Application.Services
         public IEnumerable<TicketDto> GetAllTickets()
         {
             var tickets = _ticketRepository.GetAll();
+
             return _mapper.Map<IEnumerable<TicketDto>>(tickets);
         }
 
         public TicketDto CreateTicket(CreateTicketDto newTiket)
         {
-            //var user = _mapper.Map<User>(newTiket.AssignTo);
             var ticket = _mapper.Map<Ticket>(newTiket);
             ticket.Created = DateTime.UtcNow;
             ticket.Done = false;
             _ticketRepository.Add(ticket);
+
             return _mapper.Map<TicketDto>(ticket);
             
         }
