@@ -27,9 +27,9 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<ProjectDto> GetAllProjects(int id)
+        public IEnumerable<ProjectDto> GetAllProjects()
         {
-            var projects = _userRepository.GetAll().Where(x => x.Id == id).SelectMany(x => x.Projects).Select(y => y.Project).ToList();
+            var projects = _projectRepository.GetAll();
             
             return _mapper.Map<IEnumerable<ProjectDto>>(projects);
         }

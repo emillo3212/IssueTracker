@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
@@ -28,8 +28,8 @@ namespace WebApi.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            var user = _userService.GetCurrentUser(HttpContext);
-            var projects = _projectService.GetAllProjects(user.Id);
+           
+            var projects = _projectService.GetAllProjects();
 
             return Ok(projects);
         }

@@ -13,7 +13,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -31,7 +31,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "user")]
+        
         public IActionResult Get(int id)
         {
             var user = _userService.GetUserById(id);

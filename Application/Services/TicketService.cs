@@ -14,6 +14,7 @@ namespace Application.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
         public TicketService(ITicketRepository ticketRepository,IMapper mapper)

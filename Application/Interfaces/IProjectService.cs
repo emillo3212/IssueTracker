@@ -9,7 +9,7 @@ namespace Application.Interfaces
 {
     public interface IProjectService
     {
-        IEnumerable<ProjectDto> GetAllProjects(int id);
+        IEnumerable<ProjectDto> GetAllProjects();
         ProjectDto GetProjectById(int id);
         ProjectDto CreateProject(CreateProjectDto newProject);
         
