@@ -21,12 +21,12 @@ namespace Infrastructure.Repositories
 
         public IEnumerable<Ticket> GetAll()
         {
-            return _context.Tickets.Include(u=>u.AssignTo).Include(p=>p.Project);
+            return _context.Tickets.Include(u=>u.AssignTo).Include(p=>p.Project).Include(u=>u.CreatedBy);
         }
 
         public Ticket GetById(int id)
         {
-            return _context.Tickets.Include(u=>u.AssignTo).FirstOrDefault(x => x.Id == id);
+            return _context.Tickets.Include(u=>u.AssignTo).Include(us=>us.CreatedBy).FirstOrDefault(x => x.Id == id);
         }
 
         public Ticket Add(Ticket ticket)

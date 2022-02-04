@@ -23,7 +23,8 @@ namespace WebApi.Controllers
             _ticketService = ticketService;
             _userService = userService;
         }
-        
+
+       
         [HttpGet]
         public IActionResult Get()
         {
@@ -32,11 +33,12 @@ namespace WebApi.Controllers
             return Ok(tickets);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Create(CreateTicketDto newTicketDto)
         {
-           
             var ticket = _ticketService.CreateTicket(newTicketDto);
+           
 
             return Created($"api/tickets/{ticket.Id}", ticket);
         }

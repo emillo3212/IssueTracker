@@ -41,6 +41,7 @@ namespace Infrastructure.Data
                 .HasOne(u => u.AssignTo)
                 .WithMany(t => t.Tickets);
 
+
             
                 
         }

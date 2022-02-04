@@ -12,9 +12,11 @@ namespace Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Priority Priority { get; set; }
-        public DateTime Created { get; set; }
+        public string Priority { get; set; }
+        public string Created { get; set; }
         public bool Done { get; set; }
+        public int CreatedById { get; set; }
+        public User CreatedBy { get; set; }
 
         public int AssignToId { get; set; }
         public User AssignTo { get; set; }

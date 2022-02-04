@@ -12,5 +12,6 @@ namespace Application.Interfaces
         IEnumerable<TicketDto> GetAllTickets();
         TicketDto CreateTicket(CreateTicketDto newTiket);
 
+
     }
 }

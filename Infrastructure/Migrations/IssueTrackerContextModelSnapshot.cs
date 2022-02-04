@@ -4,16 +4,14 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20211125152050_CreateTicketTable")]
-    partial class CreateTicketTable
+    partial class IssueTrackerContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,11 +81,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("AssignToId")
+                    b.Property<int>("AssignToId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Created")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedById")
                         .HasColumnType("int");
@@ -101,10 +99,10 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Priority")
-                        .HasColumnType("int");
+                    b.Property<string>("Priority")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProjectId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -173,16 +171,20 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Ticket", b =>
                 {
                     b.HasOne("Domain.Entities.User", "AssignTo")
-                        .WithMany()
-                        .HasForeignKey("AssignToId");
+                        .WithMany("Tickets")
+                        .HasForeignKey("AssignToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "CreatedBy")
-                        .WithMany("Tickets")
+                        .WithMany()
                         .HasForeignKey("CreatedById");
 
                     b.HasOne("Domain.Entities.Project", "Project")
                         .WithMany("Tickets")
-                        .HasForeignKey("ProjectId");
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AssignTo");
 

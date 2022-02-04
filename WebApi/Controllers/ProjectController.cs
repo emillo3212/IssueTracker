@@ -47,7 +47,7 @@ namespace WebApi.Controllers
         [HttpPost]
         public IActionResult Create(CreateProjectDto newProject)
         {
-            var user = _userService.GetCurrentUser(HttpContext);
+            var user = _userService.GetCurrentUser();
             newProject.Users.Add(new ProjectUserUserDto { UserId = user.Id });
 
             var project = _projectService.CreateProject(newProject);

@@ -24,12 +24,14 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
-      
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+
+        public UserService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public IEnumerable<UserDto> GetAllUser()
@@ -45,22 +47,23 @@ namespace Application.Services
         }
 
 
-        public UserDto GetCurrentUser(HttpContext httpContext)
+        public UserDto GetCurrentUser()
         {
-            var identity = httpContext.User.Identity as ClaimsIdentity;
+            var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
 
             if(identity != null)
             {
                 var userClaims = identity.Claims;
 
-                return new UserDto
+                return _mapper.Map<UserDto>(new User
                 {
                     Id = int.Parse(userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value),
                     FirstName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
                     LastName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
                     Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
-                    Role = _mapper.Map<RoleDto>(new Role { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value } )
-                };
+                    Role = new Role { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value },
+                    
+                }) ;
             }
 
             return null;

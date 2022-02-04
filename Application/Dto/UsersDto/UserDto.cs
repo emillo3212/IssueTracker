@@ -28,6 +28,8 @@ namespace Application.Dto.UsersDto
         {
             profile.CreateMap<User, UserDto>();
             profile.CreateMap<UserDto, User>();
+            profile.CreateMap<UserDto, User>();
+            profile.CreateMap<User, Ticket>();
         }
     }
 }

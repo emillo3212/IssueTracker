@@ -1,4 +1,5 @@
 ﻿using Application.Dto.UsersDto;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,6 @@ namespace Application.Interfaces
         IEnumerable<UserDto> GetAllUser();
         UserDto GetUserById(int id);
        
-        UserDto GetCurrentUser(HttpContext httpContext);
+        UserDto GetCurrentUser();
     }
 }

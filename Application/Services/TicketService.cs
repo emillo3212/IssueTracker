@@ -5,6 +5,7 @@ using Domain.Entities;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,15 @@ namespace Application.Services
     public class TicketService : ITicketService
     {
         private readonly ITicketRepository _ticketRepository;
+        private readonly IUserService _userService;
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
-        public TicketService(ITicketRepository ticketRepository,IMapper mapper)
+        public TicketService(ITicketRepository ticketRepository,IMapper mapper,IUserService userService)
         {
             _ticketRepository = ticketRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
         public IEnumerable<TicketDto> GetAllTickets()
@@ -32,8 +35,10 @@ namespace Application.Services
 
         public TicketDto CreateTicket(CreateTicketDto newTiket)
         {
+            newTiket.CreatedById = _userService.GetCurrentUser().Id;
             var ticket = _mapper.Map<Ticket>(newTiket);
-            ticket.Created = DateTime.UtcNow;
+
+            ticket.Created = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
             ticket.Done = false;
             _ticketRepository.Add(ticket);
 
