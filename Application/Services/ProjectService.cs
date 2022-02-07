@@ -49,12 +49,12 @@ namespace Application.Services
 
         public void UpdateProject(UpdateProjectDto updateProject)
         {
-            var users = _mapper.Map<ICollection<ProjectUserUserDto>>(_projectRepository.GetById(updateProject.Id).Users);
+            var existingProject = _projectRepository.GetById(updateProject.Id);
 
-            foreach(var item in users)
-                updateProject.Users.Add(item);
+            foreach(var item in existingProject.Users)
+                updateProject.Users.Add(_mapper.Map<ProjectUserUserDto>(item));
 
-            var project = _mapper.Map<Project>(updateProject);
+            var project = _mapper.Map(updateProject,existingProject);
             _projectRepository.Update(project);
         }
     }
