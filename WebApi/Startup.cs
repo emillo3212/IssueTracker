@@ -33,9 +33,9 @@ namespace WebApi
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("http://localhost:3000/").AllowAnyMethod().AllowAnyHeader();
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
-
+            //WithOrigins("http://localhost:3000/")
             services.AddMvc();
 
             services.InstallServicesInAssembly(Configuration);

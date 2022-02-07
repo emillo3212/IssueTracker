@@ -53,5 +53,11 @@ namespace WebApi.Controllers
             var project = _projectService.CreateProject(newProject);
             return Created($"api/projects/{project.Id}", project);
         }
+        [HttpPut]
+        public IActionResult Update(UpdateProjectDto updateProject)
+        {
+            _projectService.UpdateProject(updateProject);
+            return NoContent();
+        }
     }
 }

@@ -47,6 +47,11 @@ namespace Application.Services
             return _mapper.Map<ProjectDto>(project);
         }
 
-        
+        public void UpdateProject(UpdateProjectDto updateProject)
+        {
+            var existingProject = _projectRepository.GetById(updateProject.Id);
+            var project = _mapper.Map(updateProject, existingProject);
+            _projectRepository.Update(project);
+        }
     }
 }

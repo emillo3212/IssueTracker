@@ -12,6 +12,7 @@ namespace Application.Interfaces
         IEnumerable<ProjectDto> GetAllProjects();
         ProjectDto GetProjectById(int id);
         ProjectDto CreateProject(CreateProjectDto newProject);
+        void UpdateProject(UpdateProjectDto updateProject);
         
 
     }
