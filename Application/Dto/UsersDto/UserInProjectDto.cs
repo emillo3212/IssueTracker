@@ -11,6 +11,7 @@ namespace Application.Dto.UsersDto
 {
     public class UserInProjectDto : IMap
     {
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 

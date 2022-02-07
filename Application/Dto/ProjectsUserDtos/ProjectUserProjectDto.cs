@@ -12,11 +12,16 @@ namespace Application.Dto.ProjectsUserDtos
 {
     public class ProjectUserProjectDto : IMap
     {
-        public ProjectInUserDto project { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+       // public ProjectInUserDto project { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ProjectUser, ProjectUserProjectDto>();
+            profile.CreateMap<ProjectUser, ProjectUserProjectDto>().ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.ProjectId))
+                                                                    .ForMember(dst => dst.Name, opt => opt.MapFrom(src => src.Project.Name));
+
+
         }
     }
 }
