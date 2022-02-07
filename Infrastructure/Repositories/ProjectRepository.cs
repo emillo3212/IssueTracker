@@ -37,8 +37,6 @@ namespace Infrastructure.Repositories
 
         public void Update(Project project)
         {
-            var p = _context.Projects.Include(p=>p.Users).FirstOrDefault(x=>x.Id==project.Id).Users;
-            project.Users.Add((ProjectUser)p);
             _context.Projects.Update(project);
 
             _context.SaveChanges();

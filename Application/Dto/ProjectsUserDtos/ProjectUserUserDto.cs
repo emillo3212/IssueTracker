@@ -16,6 +16,7 @@ namespace Application.Dto.ProjectUserDtos
         public void Mapping(Profile profile)
         {
             profile.CreateMap<ProjectUserUserDto,ProjectUser>();
+            profile.CreateMap<ProjectUser, ProjectUserUserDto>();
         }
     }
 }
