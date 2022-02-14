@@ -13,7 +13,6 @@ namespace Application.Interfaces
     {
         IEnumerable<UserDto> GetAllUser();
         UserDto GetUserById(int id);
-       
         UserDto GetCurrentUser();
     }
 }

@@ -19,12 +19,14 @@ namespace WebApi.Controllers
         private readonly IProjectService _projectService;
         private readonly IUserService _userService;
 
+        
         public ProjectController(IProjectService projectService,IUserService userService)
         {
             _projectService = projectService;
             _userService = userService;
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Get()
         {
@@ -34,16 +36,25 @@ namespace WebApi.Controllers
             return Ok(projects);
         }
 
+        [Authorize]
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            var project = _projectService.GetProjectById(id);
-            if (project == null)
-                return NotFound();
+            var user=  _userService.GetCurrentUser();
 
-            return Ok(project);
+            if(user.Projects.FirstOrDefault(x=>x.Id==id)!=null)
+            {
+                var project = _projectService.GetProjectById(id);
+                if (project == null)
+                    return NotFound();
+
+                return Ok(project);
+            }
+
+            return Unauthorized();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Create(CreateProjectDto newProject)
         {
@@ -53,6 +64,8 @@ namespace WebApi.Controllers
             var project = _projectService.CreateProject(newProject);
             return Created($"api/projects/{project.Id}", project);
         }
+
+        [Authorize]
         [HttpPut]
         public IActionResult Update(UpdateProjectDto updateProject)
         {

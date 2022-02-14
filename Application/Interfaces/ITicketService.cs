@@ -11,7 +11,8 @@ namespace Application.Interfaces
     {
         IEnumerable<TicketDto> GetAllTickets();
         TicketDto CreateTicket(CreateTicketDto newTiket);
-
-
+        TicketDto GetTicketById(int id);
+        void UpdateTicket(UpdateTicketDto updateTicket);
+        void DeleteTicket(DeleteTicketDto ticket);
     }
 }

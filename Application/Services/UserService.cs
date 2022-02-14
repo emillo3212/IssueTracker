@@ -25,13 +25,15 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private IConfiguration _config;
 
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public UserService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration config)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _config = config;
         }
 
         public IEnumerable<UserDto> GetAllUser()
@@ -49,26 +51,26 @@ namespace Application.Services
 
         public UserDto GetCurrentUser()
         {
+   
             var identity = _httpContextAccessor.HttpContext.User.Identity as ClaimsIdentity;
 
-            if(identity != null)
+            if (identity != null)
             {
                 var userClaims = identity.Claims;
-
-                return _mapper.Map<UserDto>(new User
+                if (userClaims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName) != null)
                 {
-                    Id = int.Parse(userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value),
-                    FirstName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.GivenName)?.Value,
-                    LastName = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Surname)?.Value,
-                    Email = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value,
-                    Role = new Role { Name = userClaims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value },
-                    
-                }) ;
+                    var Id = int.Parse(userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value);
+                    var user = _userRepository.GetById(Id);
+                    return _mapper.Map<UserDto>(user);
+
+                }
+                  
+                else
+                    return null;
             }
 
             return null;
         }
-
        
 
     }

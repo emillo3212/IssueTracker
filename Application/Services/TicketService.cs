@@ -35,6 +35,7 @@ namespace Application.Services
 
         public TicketDto CreateTicket(CreateTicketDto newTiket)
         {
+        
             newTiket.CreatedById = _userService.GetCurrentUser().Id;
             var ticket = _mapper.Map<Ticket>(newTiket);
 
@@ -46,5 +47,23 @@ namespace Application.Services
             
         }
 
+        public void UpdateTicket(UpdateTicketDto updateTicket)
+        {
+            var existingTicket = _ticketRepository.GetById(updateTicket.Id);
+            var ticket = _mapper.Map(updateTicket, existingTicket);
+
+            _ticketRepository.Update(ticket);
+        }
+
+        public TicketDto GetTicketById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteTicket(DeleteTicketDto deleteTicket)
+        {
+            var ticket = _mapper.Map<Ticket>(deleteTicket);
+            _ticketRepository.Delete(ticket);
+        }
     }
 }

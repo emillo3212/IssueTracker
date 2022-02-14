@@ -15,6 +15,7 @@ namespace WebApi.Installers
         public void InstallServices(IServiceCollection services, IConfiguration Configuration)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddCookie(cfg=>cfg.SlidingExpiration = true)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

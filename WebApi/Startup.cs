@@ -33,9 +33,9 @@ namespace WebApi
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                builder.WithOrigins("https://issuetrackerdemo.azurewebsites.net").WithMethods("GET","PUT","DELETE","POST").AllowAnyHeader().AllowCredentials();
             }));
-            //WithOrigins("http://localhost:3000/")
+            
             services.AddMvc();
 
             services.InstallServicesInAssembly(Configuration);
@@ -47,13 +47,10 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            
 
-            app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
+           app.UseSwagger();
+           app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApi v1"));
 
             if (env.IsDevelopment())
             {
@@ -67,6 +64,9 @@ namespace WebApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("ApiCorsPolicy");
+
             app.UseAuthentication();
             app.UseAuthorization();
 

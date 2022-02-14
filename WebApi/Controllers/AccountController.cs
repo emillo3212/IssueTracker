@@ -19,6 +19,7 @@ namespace WebApi.Controllers
             _accountService = accountService;
         }
 
+
         [HttpPost("Register")]
         public IActionResult Register(CreateUserDto newUser)
         {
@@ -30,6 +31,7 @@ namespace WebApi.Controllers
         [HttpPost("Login")]
         public IActionResult Login(LoginUserDto loginUser)
         {
+
             return Ok(_accountService.Login(loginUser));
         }
     }

@@ -41,7 +41,18 @@ namespace WebApi.Controllers
 
             return Ok(user);
         }
-       
+        [Authorize]
+        [HttpGet("user")]
+        public IActionResult CurrentUser()
+        {
+            var user = _userService.GetCurrentUser();
+
+            if (user == null)
+                return NotFound();
+
+            return Ok(user);
+        }
+  
 
     }
 }

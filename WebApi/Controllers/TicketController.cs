@@ -24,7 +24,7 @@ namespace WebApi.Controllers
             _userService = userService;
         }
 
-       
+        [Authorize]
         [HttpGet]
         public IActionResult Get()
         {
@@ -32,7 +32,6 @@ namespace WebApi.Controllers
 
             return Ok(tickets);
         }
-
         [Authorize]
         [HttpPost]
         public IActionResult Create(CreateTicketDto newTicketDto)
@@ -41,6 +40,22 @@ namespace WebApi.Controllers
            
 
             return Created($"api/tickets/{ticket.Id}", ticket);
+        }
+        [Authorize]
+        [HttpPut]
+        public IActionResult Update(UpdateTicketDto updateTicket)
+        {
+            _ticketService.UpdateTicket(updateTicket);
+
+            return NoContent();
+        }
+        [Authorize]
+        [HttpDelete]
+        public IActionResult Delete(DeleteTicketDto ticket)
+        {
+            _ticketService.DeleteTicket(ticket);
+
+            return Ok();
         }
     }
 }

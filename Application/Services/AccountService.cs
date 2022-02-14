@@ -4,6 +4,7 @@ using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -22,12 +23,15 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private IConfiguration _config;
-        public AccountService(IUserRepository userRepository, IMapper mapper, IConfiguration config)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AccountService(IUserRepository userRepository, IMapper mapper, IConfiguration config, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _config = config;
+            _httpContextAccessor = httpContextAccessor;
         }
+        
         public UserDto CreateUser(CreateUserDto newUser)
         {
 
@@ -56,10 +60,10 @@ namespace Application.Services
             var user = _userRepository.GetAll().FirstOrDefault(x => x.Email == loginUser.Email);
 
             if (user == null)
-                throw new Exception("Incorrect Email or password");
+               throw new Exception("Incorrect Email or password");
 
             if (PasswordHasher.Verify(loginUser.Password, user.Password) == false)
-                throw new Exception("Incorrect Email or Password");
+                throw new Exception("Incorrect Email or password");
 
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -80,7 +84,11 @@ namespace Application.Services
               expires: DateTime.Now.AddMinutes(15),
               signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            //_httpContextAccessor.HttpContext.Response.Cookies.Append("Jwt", jwt);
+
+            return jwt;
 
         }
     }

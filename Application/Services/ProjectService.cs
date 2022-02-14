@@ -42,6 +42,11 @@ namespace Application.Services
 
         public ProjectDto CreateProject(CreateProjectDto newProject)
         {
+            if (newProject.Name.Length == 0)
+                throw new Exception("Name can not be empty");
+            if (newProject.Description.Length == 0)
+                throw new Exception("Description can not be empty");
+
             var project = _mapper.Map<Project>(newProject);
             _projectRepository.Add(project);
             return _mapper.Map<ProjectDto>(project);
@@ -51,8 +56,8 @@ namespace Application.Services
         {
             var existingProject = _projectRepository.GetById(updateProject.Id);
 
-            foreach(var item in existingProject.Users)
-                updateProject.Users.Add(_mapper.Map<ProjectUserUserDto>(item));
+            //foreach(var item in existingProject.Users)
+               // updateProject.Users.Add(_mapper.Map<ProjectUserUserDto>(item));
 
             var project = _mapper.Map(updateProject,existingProject);
             _projectRepository.Update(project);

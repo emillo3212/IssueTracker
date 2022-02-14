@@ -16,11 +16,14 @@ namespace Application.Dto.ProjectsUserDtos
 
         public int Id { get; set; }
         public string FirstName { get; set; }
+        public string LastName { get; set; }
         //public UserInProjectDto User { get; set; }
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<ProjectUser, ProjectUserDto>().ForMember(dst=>dst.FirstName, opt=>opt.MapFrom(src => src.User.FirstName)).ForMember(dst=>dst.Id,opt=>opt.MapFrom(src=>src.UserId));
+            profile.CreateMap<ProjectUser, ProjectUserDto>().ForMember(dst => dst.FirstName, opt => opt.MapFrom(src => src.User.FirstName))
+                                                            .ForMember(dst => dst.Id, opt => opt.MapFrom(src => src.UserId))
+                                                            .ForMember(dst => dst.LastName, opt => opt.MapFrom(src => src.User.LastName));
             profile.CreateMap<ProjectUserDto, ProjectUser>();
            
         }
