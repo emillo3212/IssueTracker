@@ -1,5 +1,6 @@
 ﻿using Application.Dto.UsersDto;
 using Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -19,7 +20,7 @@ namespace WebApi.Controllers
             _accountService = accountService;
         }
 
-
+        [Authorize(Roles ="admin")]
         [HttpPost("Register")]
         public IActionResult Register(CreateUserDto newUser)
         {

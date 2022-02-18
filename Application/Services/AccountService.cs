@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +26,8 @@ namespace Application.Services
         private readonly IMapper _mapper;
         private IConfiguration _config;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly Random _random = new Random();
         public AccountService(IUserRepository userRepository, IMapper mapper, IConfiguration config, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
@@ -32,8 +36,10 @@ namespace Application.Services
             _httpContextAccessor = httpContextAccessor;
         }
         
-        public UserDto CreateUser(CreateUserDto newUser)
+        public async Task<UserDto> CreateUser(CreateUserDto newUser)
         {
+            if (newUser.FirstName == null || newUser.LastName == null || newUser.Email == null)
+                throw new Exception("All fields have to be filled");
 
             if (_userRepository.GetAll().Any(u => u.Email == newUser.Email))
                 throw new Exception("This email already exist!");
@@ -41,11 +47,12 @@ namespace Application.Services
             if (!new EmailAddressAttribute().IsValid(newUser.Email))
                 throw new Exception("this Email is incorrect");
 
-            if (newUser.Passwrod.Length < 6)
-                throw new Exception("Password must to have more than 6 chars");
+            var passwordBuilder = new StringBuilder();
+            passwordBuilder.Append(RandomString(6));
 
-            if (!string.Equals(newUser.Passwrod, newUser.ConfirmPasswrod))
-                throw new Exception("Passwords are not the same");
+            newUser.Passwrod = passwordBuilder.ToString();
+
+            await SendMailToUser(newUser.Email,newUser.Passwrod);
 
             var user = _mapper.Map<User>(newUser);
 
@@ -86,9 +93,67 @@ namespace Application.Services
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
-            //_httpContextAccessor.HttpContext.Response.Cookies.Append("Jwt", jwt);
 
             return jwt;
+
+        }
+        
+        private string RandomString(int size, bool lowerCase = false)
+        {
+            var builder = new StringBuilder(size);
+
+            char offset = lowerCase ? 'a' : 'A';
+            const int lettersOffset = 26; 
+
+            for (var i = 0; i < size; i++)
+            {
+                var @char = (char)_random.Next(offset, offset + lettersOffset);
+                builder.Append(@char);
+            }
+
+            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
+        }
+        
+        private async Task SendMailToUser(string email,string pass)
+        {
+            SmtpClient client = new SmtpClient()
+            {
+                Host = "smtp.gmail.com",
+                Port = 587,
+                EnableSsl = true,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential()
+                {
+                    UserName = "issuetrackeremil@gmail.com",
+                    Password = "issuetracker123"
+                }
+            };
+
+            MailAddress fromEmail = new MailAddress("issuetrackeremil@gmail.com","IssueTrackerDemo");
+            MailAddress toEmail = new MailAddress(email);
+
+            MailMessage mailMessage = new MailMessage()
+            {
+                From = fromEmail,
+                Subject = "Witaj w issueTracker",
+                Body = $"Dzień dobry, właśnie zostałeś zarejestrowany do systemu issueTracker. Twoje dane logowania: \n Email: {email} \n" +
+                $"Hasło: {pass} \n Już w krótce będziesz mógł zmienić swoje przypisane hasło w profilu urzytownika. \n Powodzenia."
+            };
+
+            mailMessage.To.Add(toEmail);
+
+            try
+            {
+                client.Send(mailMessage);
+            }
+            catch (Exception error)
+            {
+
+                throw new Exception(error.ToString());
+            }
+           
+
 
         }
     }

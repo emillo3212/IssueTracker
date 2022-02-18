@@ -9,7 +9,7 @@ namespace Application.Interfaces
 {
     public interface IAccountService
     {
-        UserDto CreateUser(CreateUserDto newUser);
+        Task<UserDto> CreateUser(CreateUserDto newUser);
         string Login(LoginUserDto loginUser);
     }
 }
