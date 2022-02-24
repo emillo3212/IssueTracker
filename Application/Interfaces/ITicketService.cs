@@ -1,4 +1,5 @@
 ﻿using Application.Dto.TicketsDto;
+using Application.Dto.UsersDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,6 @@ namespace Application.Interfaces
         TicketDto CreateTicket(CreateTicketDto newTiket);
         TicketDto GetTicketById(int id);
         void UpdateTicket(UpdateTicketDto updateTicket);
-        void DeleteTicket(DeleteTicketDto ticket);
+        void DeleteTicket(DeleteTicketDto ticket,UserDto deleter);
     }
 }

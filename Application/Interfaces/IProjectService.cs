@@ -1,4 +1,5 @@
 ﻿using Application.Dto.ProjectsDto;
+using Application.Dto.UsersDto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace Application.Interfaces
         ProjectDto GetProjectById(int id);
         ProjectDto CreateProject(CreateProjectDto newProject);
         void UpdateProject(UpdateProjectDto updateProject);
+        string DeleteProject(DeleteProjectDto deleteProject,UserDto deleter);
         
 
     }

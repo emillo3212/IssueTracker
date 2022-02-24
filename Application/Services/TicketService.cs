@@ -1,4 +1,5 @@
 ﻿using Application.Dto.TicketsDto;
+using Application.Dto.UsersDto;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
@@ -60,9 +61,15 @@ namespace Application.Services
             throw new NotImplementedException();
         }
 
-        public void DeleteTicket(DeleteTicketDto deleteTicket)
+        public void DeleteTicket(DeleteTicketDto deleteTicket,UserDto deleter)
         {
-            var ticket = _mapper.Map<Ticket>(deleteTicket);
+           var Delticket = _ticketRepository.GetById(deleteTicket.Id);
+            
+            if (Delticket.ProjectId == 9)
+                if(deleter.Role.Name=="demo")
+                    throw new Exception("Nie masz uprawnień aby usunąć to zadanie!");
+
+            var ticket = _mapper.Map<Ticket>(Delticket);
             _ticketRepository.Delete(ticket);
         }
     }

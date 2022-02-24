@@ -53,7 +53,9 @@ namespace WebApi.Controllers
         [HttpDelete]
         public IActionResult Delete(DeleteTicketDto ticket)
         {
-            _ticketService.DeleteTicket(ticket);
+            var deleter = _userService.GetCurrentUser();
+
+            _ticketService.DeleteTicket(ticket,deleter);
 
             return Ok();
         }

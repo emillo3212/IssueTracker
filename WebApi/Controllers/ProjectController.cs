@@ -51,6 +51,14 @@ namespace WebApi.Controllers
                 return Ok(project);
             }
 
+            if(user.Role.Name=="admin"|| user.Role.Name == "demo")
+            {
+                var project = _projectService.GetProjectById(id);
+                if (project == null)
+                    return NotFound();
+                return Ok(project);
+            }
+
             return Unauthorized();
         }
 
@@ -70,6 +78,15 @@ namespace WebApi.Controllers
         public IActionResult Update(UpdateProjectDto updateProject)
         {
             _projectService.UpdateProject(updateProject);
+            return NoContent();
+        }
+
+        [Authorize(Roles = "admin,demo")]
+        [HttpDelete]
+        public IActionResult Delete(DeleteProjectDto deleteProject)
+        {
+            var deleter = _userService.GetCurrentUser();
+            _projectService.DeleteProject(deleteProject,deleter);
             return NoContent();
         }
     }

@@ -20,7 +20,7 @@ namespace WebApi.Controllers
             _accountService = accountService;
         }
 
-        [Authorize(Roles ="admin")]
+        [Authorize(Roles ="admin,demo")]
         [HttpPost("Register")]
         public IActionResult Register(CreateUserDto newUser)
         {

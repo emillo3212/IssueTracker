@@ -62,5 +62,20 @@ namespace Application.Services
             var project = _mapper.Map(updateProject,existingProject);
             _projectRepository.Update(project);
         }
+
+        public string DeleteProject(DeleteProjectDto deleteProject,UserDto delter)
+        {
+            var project = _projectRepository.GetById(deleteProject.Id);
+
+            if(delter.Role.Name=="demo")
+                if(project.Id==9)
+                    throw new Exception("Jako urzytkownik demo nie masz uprawnien do usunięcia tego projektu");
+                
+           
+            if (project != null)
+                _projectRepository.Delete(project);
+
+            return "";
+        }
     }
 }
