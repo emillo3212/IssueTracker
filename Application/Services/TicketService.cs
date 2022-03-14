@@ -1,6 +1,7 @@
 ﻿using Application.Dto.TicketsDto;
 using Application.Dto.UsersDto;
 using Application.Interfaces;
+using Application.Services.Validation;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -17,7 +18,6 @@ namespace Application.Services
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IUserService _userService;
-        private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
         public TicketService(ITicketRepository ticketRepository,IMapper mapper,IUserService userService)
@@ -36,12 +36,16 @@ namespace Application.Services
 
         public TicketDto CreateTicket(CreateTicketDto newTiket)
         {
-        
+
+            TicketServiceValidation.CreateTicketValidation(newTiket);
+
+
             newTiket.CreatedById = _userService.GetCurrentUser().Id;
             var ticket = _mapper.Map<Ticket>(newTiket);
 
             ticket.Created = DateTime.Now.ToString("dd.MM.yyyy HH:mm");
             ticket.Done = false;
+
             _ticketRepository.Add(ticket);
 
             return _mapper.Map<TicketDto>(ticket);
@@ -55,12 +59,6 @@ namespace Application.Services
 
             _ticketRepository.Update(ticket);
         }
-
-        public TicketDto GetTicketById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteTicket(DeleteTicketDto deleteTicket,UserDto deleter)
         {
            var Delticket = _ticketRepository.GetById(deleteTicket.Id);

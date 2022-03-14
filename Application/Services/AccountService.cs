@@ -1,6 +1,7 @@
 ﻿using Application.Dto.UsersDto;
 using Application.Helpers;
 using Application.Interfaces;
+using Application.Services.Validation;
 using AutoMapper;
 using Domain.Entities;
 using Domain.Interfaces;
@@ -25,27 +26,19 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private IConfiguration _config;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         private readonly Random _random = new Random();
-        public AccountService(IUserRepository userRepository, IMapper mapper, IConfiguration config, IHttpContextAccessor httpContextAccessor)
+        public AccountService(IUserRepository userRepository, IMapper mapper, IConfiguration config)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _config = config;
-            _httpContextAccessor = httpContextAccessor;
         }
         
         public async Task<UserDto> CreateUser(CreateUserDto newUser)
         {
-            if (newUser.FirstName == null || newUser.LastName == null || newUser.Email == null)
-                throw new Exception("All fields have to be filled");
-
-            if (_userRepository.GetAll().Any(u => u.Email == newUser.Email))
-                throw new Exception("This email already exist!");
-
-            if (!new EmailAddressAttribute().IsValid(newUser.Email))
-                throw new Exception("this Email is incorrect");
+            var userToValidate = _userRepository.GetAll().FirstOrDefault(u => u.Email == newUser.Email);
+            AccountServiceValidation.CreateUserValidation(newUser, userToValidate);
 
             var passwordBuilder = new StringBuilder();
             passwordBuilder.Append(RandomString(6));
@@ -58,6 +51,7 @@ namespace Application.Services
 
             user.Password = PasswordHasher.Hash(newUser.Passwrod, 1000);
             user.RoleId = 1;
+
             _userRepository.Add(user);
             return _mapper.Map<UserDto>(user);
         }
@@ -66,11 +60,7 @@ namespace Application.Services
         {
             var user = _userRepository.GetAll().FirstOrDefault(x => x.Email == loginUser.Email);
 
-            if (user == null)
-               throw new Exception("Incorrect Email or password");
-
-            if (PasswordHasher.Verify(loginUser.Password, user.Password) == false)
-                throw new Exception("Incorrect Email or password");
+            AccountServiceValidation.LoginValidation(loginUser, user);
 
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
@@ -138,7 +128,7 @@ namespace Application.Services
                 From = fromEmail,
                 Subject = "Witaj w issueTracker",
                 Body = $"Dzień dobry, właśnie zostałeś zarejestrowany do systemu issueTracker. Twoje dane logowania: \n Email: {email} \n" +
-                $"Hasło: {pass} \n Już w krótce będziesz mógł zmienić swoje przypisane hasło w profilu urzytownika. \n Powodzenia."
+                $"Hasło: {pass} \n Już w krótce będziesz mógł zmienić swoje przypisane hasło w profilu użytownika. \n Powodzenia."
             };
 
             mailMessage.To.Add(toEmail);

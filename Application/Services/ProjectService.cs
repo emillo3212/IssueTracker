@@ -17,13 +17,11 @@ namespace Application.Services
     public class ProjectService : IProjectService
     {
         private readonly IProjectRepository _projectRepository;
-        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public ProjectService(IProjectRepository projectRepository, IUserRepository userRepository, IMapper mapper)
+        public ProjectService(IProjectRepository projectRepository, IMapper mapper)
         {
             _projectRepository = projectRepository;
-            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -56,11 +54,13 @@ namespace Application.Services
         {
             var existingProject = _projectRepository.GetById(updateProject.Id);
 
-            //foreach(var item in existingProject.Users)
-               // updateProject.Users.Add(_mapper.Map<ProjectUserUserDto>(item));
+            if(existingProject!=null)
+            {
+                var project = _mapper.Map(updateProject, existingProject);
 
-            var project = _mapper.Map(updateProject,existingProject);
-            _projectRepository.Update(project);
+                _projectRepository.Update(project);
+            }
+            
         }
 
         public string DeleteProject(DeleteProjectDto deleteProject,UserDto delter)
@@ -69,7 +69,7 @@ namespace Application.Services
 
             if(delter.Role.Name=="demo")
                 if(project.Id==9)
-                    throw new Exception("Jako urzytkownik demo nie masz uprawnien do usunięcia tego projektu");
+                    throw new Exception("Jako użytkownik demo nie masz uprawnien do usunięcia tego projektu");
                 
            
             if (project != null)

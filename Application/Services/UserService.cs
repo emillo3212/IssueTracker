@@ -25,15 +25,13 @@ namespace Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private IConfiguration _config;
 
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration config)
+        public UserService(IUserRepository userRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
-            _config = config;
         }
 
         public IEnumerable<UserDto> GetAllUser()
@@ -61,8 +59,8 @@ namespace Application.Services
                 {
                     var Id = int.Parse(userClaims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value);
                     var user = _userRepository.GetById(Id);
-                    return _mapper.Map<UserDto>(user);
 
+                    return _mapper.Map<UserDto>(user);
                 }
                   
                 else

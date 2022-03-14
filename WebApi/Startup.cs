@@ -33,7 +33,7 @@ namespace WebApi
         {
             services.AddCors(options => options.AddPolicy("ApiCorsPolicy", builder =>
             {
-                builder.WithOrigins("https://issuetrackerdemo.azurewebsites.net").WithMethods("GET","PUT","DELETE","POST").AllowAnyHeader().AllowCredentials();
+                builder.WithOrigins("http://localhost:3000").WithMethods("GET","PUT","DELETE","POST").AllowAnyHeader().AllowCredentials();
             }));
             
             services.AddMvc();

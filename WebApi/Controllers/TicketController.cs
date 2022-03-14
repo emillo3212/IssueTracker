@@ -41,6 +41,7 @@ namespace WebApi.Controllers
 
             return Created($"api/tickets/{ticket.Id}", ticket);
         }
+
         [Authorize]
         [HttpPut]
         public IActionResult Update(UpdateTicketDto updateTicket)
